@@ -33,6 +33,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Cloudflare workers
+.cloudflar
+.wrangler
+
 **/*.trace
 **/*.zip
 **/*.tar.gz
@@ -40,3 +44,4 @@ yarn-error.log*
 **/*.log
 package-lock.json
 **/*.bun
+**/*.exe
