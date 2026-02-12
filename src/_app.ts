@@ -4,22 +4,33 @@ import { opentelemetry } from "@elysiajs/opentelemetry";
 import { serverTiming } from "@elysiajs/server-timing";
 import { staticPlugin } from "@elysiajs/static";
 import { Elysia, type ElysiaConfig } from "elysia";
-import { appConfig, logger } from "./_config";
+import { appConfig, logger, API_NAME, API_VERSION } from "./_config";
 
 export const createApp = (config?: ElysiaConfig<any>) =>
   new Elysia({
     ...appConfig,
     ...config,
   })
-    .use(openapi())
+    .use(
+      openapi({
+        documentation: {
+          info: {
+            title: `${API_NAME} API Documentation`,
+            version: API_VERSION,
+          },
+        },
+      }),
+    )
     .use(bearer())
     .use(staticPlugin())
     .use(opentelemetry())
     .use(serverTiming())
-    .trace(async ({ onHandle }) => {
+    .trace(async ({ onHandle, set }) => {
       onHandle(({ onStop }) => {
         onStop(({ elapsed }) => {
-          logger.trace(`Request took: ${elapsed.toFixed(3)} ms`);
+          const elapsed_time = elapsed.toFixed(4);
+          set.headers["X-Elapsed"] = elapsed_time;
+          logger.trace(`Request took: ${elapsed_time} ms`);
         });
       });
     })

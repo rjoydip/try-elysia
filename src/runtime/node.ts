@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { env } from "node:process";
 import { node } from "@elysiajs/node";
 import { escapeHTML } from "fast-escape-html";
 import { runtime } from "std-env";
@@ -11,7 +13,16 @@ const app = createApp({
   sanitize: (value) => escapeHTML(value),
 })
   .use(baseAPI)
-  .listen(PORT);
+  .listen({
+    port: PORT,
+    tls:
+      env.TLS_CERT_PATH && env.TLS_KEY_PATH
+        ? {
+            cert: readFileSync(env.TLS_CERT_PATH),
+            key: readFileSync(env.TLS_KEY_PATH),
+          }
+        : undefined,
+  });
 
 logger.info(`🦊 ${app.store.name} (${runtime}/${app.store.version}) is running at ${PORT}`);
 

@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { Elysia, t, sse } from "elysia";
 import { API_VERSION, API_NAME, logger } from "./_config";
 
 const baseAPI = new Elysia({})
@@ -21,6 +21,16 @@ const baseAPI = new Elysia({})
     message(ws, message) {
       ws.send(message);
     },
+  })
+  .get("/sse", function* () {
+    yield sse("hello world");
+    yield sse({
+      event: "message",
+      data: {
+        message: "This is SSR message",
+        timestamp: new Date().toISOString(),
+      },
+    });
   })
   .get("/meta", ({ store: { version, name } }) => ({ version, name }))
   .get("/", ({ store: { name }, set }) => {

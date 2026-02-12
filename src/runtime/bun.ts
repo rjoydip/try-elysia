@@ -8,7 +8,16 @@ const app = createApp({
   sanitize: (value) => Bun.escapeHTML(value),
 })
   .use(baseAPI)
-  .listen(PORT);
+  .listen({
+    port: PORT,
+    tls:
+      Bun.env.TLS_CERT_PATH && Bun.env.TLS_KEY_PATH
+        ? {
+            cert: Bun.file(Bun.env.TLS_CERT_PATH),
+            key: Bun.file(Bun.env.TLS_KEY_PATH),
+          }
+        : undefined,
+  });
 
 logger.info(
   `🦊 ${app.store.name} (${runtime}/${app.store.version}) is running at ${app.server?.protocol}://${app.server?.hostname}:${app.server?.port}`,

@@ -51,6 +51,20 @@ describe("API", () => {
     expect(response_text).toEqual(JSON.stringify(metadata));
   });
 
+  it("should return ssr message", async () => {
+    // const response = await app.handle(new Request("http://localhost/sse"));
+    const { data, error } = await rpc_api.sse.get();
+
+    if (error) {
+      expect(error).toBeUndefined();
+    } else {
+      for await (const chunk of data) {
+        expect(typeof chunk).toBe("object");
+        expect(chunk).toHaveProperty("data");
+      }
+    }
+  });
+
   it("should handle connection and messages", async () => {
     // Capture received messages
     const messages: string[] = [];
