@@ -1,3 +1,3 @@
 {
-  "recommendations": ["denoland.vscode-deno", "oxc.oxc-vscode"]
+  "recommendations": ["alexcvzz.vscode-sqlite", "oxc.oxc-vscode"]
 }

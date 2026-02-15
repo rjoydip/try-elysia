@@ -25,23 +25,20 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# vercel
-.vercel
-
 # Cloudflare workers
 .cloudflar
 .wrangler
 
+# Database
+migrations/
+
 **/*.trace
-**/*.zip
-**/*.tar.gz
-**/*.tgz
 **/*.log
-package-lock.json
-**/*.bun
-**/*.exe
+**/*.db
+**/*.sqlite

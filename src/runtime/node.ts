@@ -1,18 +1,19 @@
 import { readFileSync } from "node:fs";
-import { env } from "node:process";
 import { node } from "@elysiajs/node";
 import { escapeHTML } from "fast-escape-html";
 import { runtime } from "std-env";
-import { PORT, logger } from "../_config";
-import { createApp } from "../_app";
-import baseAPI from "../_api";
+import { createApp } from "~/_app";
+import { api } from "~/api";
+import { API_PREFIX, logger } from "~/_config";
+import { env } from "~/env";
+
+const PORT = env.PORT;
 
 const app = createApp({
-  prefix: "",
   adapter: node(),
   sanitize: (value) => escapeHTML(value),
 })
-  .use(baseAPI)
+  .use(api)
   .listen({
     port: PORT,
     tls:
@@ -24,7 +25,11 @@ const app = createApp({
         : undefined,
   });
 
-logger.info(`🦊 ${app.store.name} (${runtime}/${app.store.version}) is running at ${PORT}`);
+logger.info(
+  `🦊 ${app.store.name} (${runtime} - runtime) is running at ${PORT}, API prefix ${API_PREFIX}`,
+);
 
-export type App = typeof app;
+logger.info(`📚 OpenAPI documentation available at /openapi`);
+
+export type NodeApp = typeof app;
 export default app;

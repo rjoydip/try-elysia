@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import app from "../../src/runtime/bun";
+import app from "~/runtime/bun";
+import { API_ENDPOINT } from "../_test_utils";
 
 describe("Bun Runtime", () => {
   it("should initialize the app", () => {
@@ -11,7 +12,7 @@ describe("Bun Runtime", () => {
   });
 
   it("should return a text/plain response for root", async () => {
-    const response = await app.handle(new Request("http://localhost/"));
+    const response = await app.handle(new Request(API_ENDPOINT));
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("text/plain; charset=utf-8");
@@ -20,7 +21,7 @@ describe("Bun Runtime", () => {
   });
 
   it("should return a application/json response for /meta", async () => {
-    const response = await app.handle(new Request("http://localhost/meta"));
+    const response = await app.handle(new Request(`${API_ENDPOINT}/meta`));
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("application/json");
@@ -28,6 +29,5 @@ describe("Bun Runtime", () => {
 
     const body = await response.json();
     expect(body).toHaveProperty("name");
-    expect(body).toHaveProperty("version");
   });
 });

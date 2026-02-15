@@ -9,6 +9,10 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "~/*": ["./src/*"],
+      "~/public/*": ["./public/*"]
+    }
   }
 }
