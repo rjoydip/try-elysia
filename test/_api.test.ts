@@ -1,3 +1,4 @@
+import { v4 as secure } from "@lukeed/uuid/secure";
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { treaty } from "@elysiajs/eden";
 import { api as baseAPI, type API as BaseAPI } from "~/api";
@@ -66,9 +67,9 @@ describe("API", () => {
 
   it("should handle connection and messages", async () => {
     // Capture received messages
-    const messages: string[] = [];
-    ws.addEventListener("message", (event) => {
-      messages.push(event.data.toString());
+    const messages: { id: string; message: string }[] = [];
+    ws.addEventListener("message", ({ data }) => {
+      messages.push(data);
     });
 
     // Wait for connection to open
@@ -80,15 +81,21 @@ describe("API", () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(messages.length).toBe(1);
-    expect(messages).toContain("Welcome");
+    expect(JSON.parse(messages[0].toString())).toMatchObject({
+      id: expect.any(String),
+      message: "Welcome",
+    });
 
     // Send a test message
-    ws.send("Hello Elysia");
+    ws.send(JSON.stringify({ id: secure(), message: "Hello Elysia" }));
 
     // Wait for the echo response
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(messages.length).toBe(2);
-    expect(messages).toContain("Hello Elysia");
+    expect(JSON.parse(messages[1].toString())).toMatchObject({
+      id: expect.any(String),
+      message: "Hello Elysia",
+    });
   });
 });
