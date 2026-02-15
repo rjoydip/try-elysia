@@ -1,20 +1,18 @@
-import { env } from "node:process";
-import { isBrowser } from "environment";
 import { ElysiaConfig } from "elysia";
 import NonError from "non-error";
-import { isBun, isProduction, isWorkerd } from "std-env";
+import { isProduction } from "std-env";
 import stripAnsi from "strip-ansi";
 import { Logger, ILogObj } from "tslog";
 
-export const API_VERSION = "v1";
-export const API_PREFIX = "/api";
-export const DEFAULT_PORT = isWorkerd ? 8787 : 3000;
+export const API_PREFIX = `/api`;
+export const AUTH_PREFIX = `${API_PREFIX}/auth/*`;
 export const API_NAME = "TRY ELYSIA";
+export const APP_NAME = API_NAME;
 
-export const PORT = isBun ? Bun.env.PORT || DEFAULT_PORT : env.PORT || DEFAULT_PORT;
+const _isBrowser = globalThis.window?.document !== undefined;
 
 const _getFilePathForLog = () =>
-  isBrowser ? "" : `[${isProduction ? "{{filePathWithLine}}" : "{{filePathWithLine}}"}]`;
+  _isBrowser ? "" : `[${isProduction ? "{{filePathWithLine}}" : "{{filePathWithLine}}"}]`;
 
 export const logger: Logger<ILogObj> = new Logger({
   name: API_NAME,
@@ -24,7 +22,7 @@ export const logger: Logger<ILogObj> = new Logger({
   stylePrettyLogs: true,
   prettyLogStyles: {
     logLevelName: {
-      "*": ["bold", "black", isBrowser ? "bgCyanBright" : "bgWhiteBright", "dim"],
+      "*": ["bold", "black", _isBrowser ? "bgCyanBright" : "bgWhiteBright", "dim"],
       SILLY: ["bold", "cyan"],
       TRACE: ["bold", "cyanBright"],
       DEBUG: ["bold", "green"],
@@ -33,7 +31,7 @@ export const logger: Logger<ILogObj> = new Logger({
       ERROR: ["bold", "red"],
       FATAL: ["bold", "redBright"],
     },
-    dateIsoStr: isBrowser ? ["cyan", "bold"] : "cyan",
+    dateIsoStr: _isBrowser ? ["cyan", "bold"] : "cyan",
     filePathWithLine: "cyan",
     name: ["cyan", "bold"],
     nameWithDelimiterPrefix: ["cyan", "bold"],
@@ -52,7 +50,7 @@ export const logger: Logger<ILogObj> = new Logger({
         case "FATAL":
           const newError = logErrors.map((i) => {
             const withoutErrorSuffixer = i.replace("Error ", "").trim();
-            if (isBrowser) {
+            if (_isBrowser) {
               const nonError = new NonError(
                 stripAnsi(withoutErrorSuffixer.replaceAll("error stack:", "")).trim(),
               );
@@ -78,8 +76,8 @@ export const logger: Logger<ILogObj> = new Logger({
 });
 
 export const appConfig: ElysiaConfig<any> = {
-  prefix: `${API_PREFIX}/${API_VERSION}`,
   normalize: true,
+  prefix: "",
   nativeStaticResponse: true,
   websocket: {
     idleTimeout: 30,

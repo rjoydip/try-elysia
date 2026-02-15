@@ -1,10 +1,9 @@
-import { openapi } from "@elysiajs/openapi";
 import { bearer } from "@elysiajs/bearer";
+import { fromTypes, openapi } from "@elysiajs/openapi";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { serverTiming } from "@elysiajs/server-timing";
-import { staticPlugin } from "@elysiajs/static";
 import { Elysia, type ElysiaConfig } from "elysia";
-import { appConfig, logger, API_NAME, API_VERSION } from "./_config";
+import { appConfig, logger, API_NAME } from "~/_config";
 
 export const createApp = (config?: ElysiaConfig<any>) =>
   new Elysia({
@@ -13,16 +12,16 @@ export const createApp = (config?: ElysiaConfig<any>) =>
   })
     .use(
       openapi({
+        references: fromTypes(),
         documentation: {
           info: {
             title: `${API_NAME} API Documentation`,
-            version: API_VERSION,
+            version: "v1",
           },
         },
       }),
     )
     .use(bearer())
-    .use(staticPlugin())
     .use(opentelemetry())
     .use(serverTiming())
     .trace(async ({ onHandle, set }) => {
@@ -50,3 +49,7 @@ export const createApp = (config?: ElysiaConfig<any>) =>
         },
       });
     });
+
+type App = ReturnType<typeof createApp>;
+export default createApp;
+export { App };

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import app from "../../src/runtime/workerd";
+import app from "~/runtime/workerd";
+import { API_ENDPOINT } from "../_test_utils";
 
 describe("Worked Runtime", () => {
   it("should initialize the app", () => {
@@ -8,7 +9,7 @@ describe("Worked Runtime", () => {
   });
 
   it("should return a text/plain response for root", async () => {
-    const response = await app.handle(new Request("http://localhost/"));
+    const response = await app.handle(new Request(API_ENDPOINT));
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("text/plain");
@@ -16,12 +17,11 @@ describe("Worked Runtime", () => {
   });
 
   it("should return a application/json response for /meta", async () => {
-    const response = await app.handle(new Request("http://localhost/meta"));
+    const response = await app.handle(new Request(`${API_ENDPOINT}/meta`));
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("application/json");
     const body = await response.json();
     expect(body).toHaveProperty("name");
-    expect(body).toHaveProperty("version");
   });
 });

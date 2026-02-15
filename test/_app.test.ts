@@ -1,15 +1,17 @@
 import { describe, expect, it } from "bun:test";
-import { createApp } from "../src/_app";
+import { createApp } from "~/_app";
+import { API_ENDPOINT } from "./_test_utils";
+import { API_PREFIX } from "~/_config";
 
 describe("createApp", () => {
-  it("should initialize the application", () => {
+  it("should initialize the application", async () => {
     const app = createApp();
     expect(app).toBeDefined();
   });
 
   it("should return 404 for non-existent routes", async () => {
     const app = createApp();
-    const response = await app.handle(new Request("http://localhost/not-found"));
+    const response = await app.handle(new Request(`${API_ENDPOINT}/not-found`));
     const body = await response.json();
 
     expect(response.ok).toBeFalse();
@@ -19,11 +21,11 @@ describe("createApp", () => {
 
   it("should handle thrown Errors by returning a JSON response", async () => {
     // Setup a route that throws an Error
-    const app = createApp({ prefix: "" }).get("/trigger-error", () => {
+    const app = createApp({ prefix: API_PREFIX }).get("/trigger-error", () => {
       throw new Error("Something went wrong");
     });
 
-    const response = await app.handle(new Request("http://localhost/trigger-error"));
+    const response = await app.handle(new Request(`${API_ENDPOINT}/trigger-error`));
     const body = await response.json();
 
     expect(response.ok).toBeFalse();

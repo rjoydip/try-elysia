@@ -1,18 +1,19 @@
 import { readFileSync } from "node:fs";
-import { env } from "node:process";
 import { CloudflareAdapter } from "elysia/adapter/cloudflare-worker";
 import { escapeHTML } from "fast-escape-html";
 import { runtime } from "std-env";
-import { createApp } from "../_app";
-import { logger, PORT } from "../_config";
-import baseAPI from "../_api";
+import { createApp } from "~/_app";
+import { api } from "~/api";
+import { API_PREFIX, logger } from "~/_config";
+import { env } from "~/env";
+
+const PORT = env.PORT;
 
 const app = createApp({
-  prefix: "",
   adapter: CloudflareAdapter,
   sanitize: (value) => escapeHTML(value),
 })
-  .use(baseAPI)
+  .use(api)
   .listen({
     port: PORT,
     tls:
@@ -24,7 +25,11 @@ const app = createApp({
         : undefined,
   });
 
-logger.info(`🦊 ${app.store.name} (${runtime}/${app.store.version}) ${runtime} is running`);
+logger.info(
+  `🦊 ${app.store.name} (${runtime} - runtime) is running at ${PORT}, API prefix ${API_PREFIX}`,
+);
 
-export type App = typeof app;
+logger.info(`📚 OpenAPI documentation available at /openapi`);
+
+export type WorkerdApp = typeof app;
 export default app.compile();

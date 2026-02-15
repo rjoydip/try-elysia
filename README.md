@@ -1,11 +1,15 @@
-# Elysia with Bun runtime
+# Elysia Application
 
-## Getting Started
+This project is a high-performance server application built with [ElysiaJS](https://elysiajs.com) and running on the [Bun](https://bun.sh) runtime, [node](https://nodejs.org/en/) and [worked](https://cloudflare.com).
 
-To get started with this template, simply paste this command into your terminal:
+## Prerequisites
+
+- Ensure you have [Bun](https://bun.sh) installed on your machine.
+- Ensure you have [node](https://nodejs.org/en/) installed on your machine.
 
 ```bash
-bun create elysia ./elysia-example
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
 ```
 
 ## Development
@@ -16,4 +20,12 @@ To start the development server run:
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+## Generate Auth Schema
+
+For generating `better-auth` schema please use below command.
+
+```bash
+bun x @better-auth/cli@latest generate --output ./src/db/schema/auth.ts
+```
+
+Open [http://localhost:3000/](http://localhost:3000/) with your browser to see the result.
