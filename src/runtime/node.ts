@@ -3,9 +3,9 @@ import { node } from "@elysiajs/node";
 import { escapeHTML } from "fast-escape-html";
 import { runtime } from "std-env";
 import { createApp } from "~/_app";
-import { api } from "~/api";
+import { api } from "~/_api";
 import { API_PREFIX, logger } from "~/_config";
-import { env } from "~/env";
+import { env } from "~/_env";
 
 const PORT = env.PORT;
 

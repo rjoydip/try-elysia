@@ -4,7 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { openAPI } from "better-auth/plugins";
 import { isBun } from "std-env";
 import { db } from "~/db/_client";
-import { env } from "~/env";
+import { env } from "~/_env";
 
 const hashOpts: Options = {
   memoryCost: 65536, // 64 MiB

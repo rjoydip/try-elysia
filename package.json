@@ -18,6 +18,7 @@
     "dev": "bun run --watch src/runtime/bun.ts",
     "dev:node": "tsx watch src/runtime/node.ts",
     "dev:workerd": "wrangler dev src/runtime/workerd.ts",
+    "dev:edge": "bun run --watch src/runtime/edge.ts",
     "build:node": "tsx build src/runtime/node.ts",
     "build:bun": "bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server src/runtime/bun.ts"
   },
@@ -37,6 +38,9 @@
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "elysia": "^1.4.25",
+    "elysia-ip": "^1.0.10",
+    "elysia-rate-limit": "^4.5.0",
+    "elysiajs-helmet": "^1.0.4",
     "fast-escape-html": "^1.1.0",
     "non-error": "^0.1.0",
     "react": "^19.2.4",

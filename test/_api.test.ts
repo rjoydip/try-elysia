@@ -1,7 +1,7 @@
 import { v4 as secure } from "@lukeed/uuid/secure";
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { treaty } from "@elysiajs/eden";
-import { api as baseAPI, type API as BaseAPI } from "~/api";
+import { api as baseAPI, type API as BaseAPI } from "~/_api";
 import { API_NAME, API_PREFIX } from "~/_config";
 import { API_ENDPOINT } from "./_test_utils";
 

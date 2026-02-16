@@ -4,8 +4,8 @@ import {
   type UseQueryOptions,
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query";
-import { type API } from "~/api";
-import { env } from "~/env";
+import { type API } from "~/_api";
+import { env } from "~/_env";
 
 export const rpc_api = treaty<API>(env.BASE_URL, {
   fetch: {

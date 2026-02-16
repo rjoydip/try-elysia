@@ -2,7 +2,7 @@ import { v4 as secure } from "@lukeed/uuid/secure";
 import { Elysia, t, sse } from "elysia";
 import { API_NAME, logger, API_PREFIX } from "~/_config";
 import { userRoutes } from "~/features/user/+index.routes";
-import { authService } from "~/services/auth";
+import { authService } from "~/middlewares/_auth";
 
 export const api = new Elysia({
   prefix: API_PREFIX,
