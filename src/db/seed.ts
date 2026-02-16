@@ -2,7 +2,7 @@ import { reset, seed } from "drizzle-seed";
 import { createDB } from "~/db/_client";
 import * as schema from "~/db/schema/_main";
 import { logger } from "~/_config";
-import { env } from "~/env";
+import { env } from "~/_env";
 
 async function main() {
   const db = await createDB(env.DATABASE_URL, env.DATABASE_AUTH_TOKEN, true);

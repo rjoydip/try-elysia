@@ -3,7 +3,20 @@ import { fromTypes, openapi } from "@elysiajs/openapi";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { serverTiming } from "@elysiajs/server-timing";
 import { Elysia, type ElysiaConfig } from "elysia";
+import { ip } from "elysia-ip";
+import { DefaultContext, type Generator, rateLimit } from "elysia-rate-limit";
+import { SocketAddress } from "elysia/universal";
+import { elysiaHelmet } from "elysiajs-helmet";
 import { appConfig, logger, API_NAME } from "~/_config";
+
+/**
+ * Generates a unique identifier for rate limiting based on the request's IP address.
+ * @param {*} _r - The request object (unused).
+ * @param {*} _s - The response object (unused).
+ * @param {{ ip: SocketAddress }} param2 - The context containing the IP address.
+ * @returns {string} The IP address or 'unknown' if not available.
+ */
+const ipGenerator: Generator<{ ip: SocketAddress }> = (_r, _s, { ip }) => ip?.address ?? "unknown";
 
 export const createApp = (config?: ElysiaConfig<any>) =>
   new Elysia({
@@ -21,18 +34,86 @@ export const createApp = (config?: ElysiaConfig<any>) =>
         },
       }),
     )
+    .use(ip())
     .use(bearer())
     .use(opentelemetry())
-    .use(serverTiming())
-    .trace(async ({ onHandle, set }) => {
-      onHandle(({ onStop }) => {
-        onStop(({ elapsed }) => {
-          const elapsed_time = elapsed.toFixed(4);
-          set.headers["X-Elapsed"] = elapsed_time;
-          logger.trace(`Request took: ${elapsed_time} ms`);
+    .use(
+      elysiaHelmet({
+        csp: {
+          useNonce: true,
+        },
+        hsts: {
+          maxAge: 31_536_000,
+          includeSubDomains: true,
+          preload: true,
+        },
+        frameOptions: "DENY",
+        referrerPolicy: "strict-origin-when-cross-origin",
+        permissionsPolicy: {},
+      }),
+    )
+    .use(
+      serverTiming({
+        trace: {
+          request: true,
+          parse: true,
+          transform: true,
+          beforeHandle: true,
+          handle: true,
+          afterHandle: true,
+          error: true,
+          mapResponse: true,
+          total: true,
+        },
+      }),
+    )
+    .use(
+      rateLimit({
+        duration: 60_000,
+        max: 100,
+        headers: true,
+        scoping: "scoped",
+        countFailedRequest: true,
+        errorResponse: new Response(
+          JSON.stringify({
+            error: "Too many requests",
+          }),
+          { status: 429 },
+        ),
+        generator: ipGenerator,
+        context: new DefaultContext(10_000),
+      }),
+    )
+    .trace(
+      /**
+       * Configures tracing hooks for before/after/error handling.
+       * Logs timing and errors for each request.
+       */
+      async ({ onBeforeHandle, onAfterHandle, onError, onHandle, set }) => {
+        onBeforeHandle(({ begin, onStop }) => {
+          onStop(({ end }) => {
+            logger.debug(`BeforeHandle took ${{ duration: end - begin }}`);
+          });
         });
-      });
-    })
+        onAfterHandle(({ begin, onStop }) => {
+          onStop(({ end }) => {
+            logger.debug(`AfterHandle took ${{ duration: end - begin }}`);
+          });
+        });
+        onError(({ begin, onStop }) => {
+          onStop(({ end, error }) => {
+            logger.error(`Error occurred after trace ${error}, ${{ duration: end - begin }}`);
+          });
+        });
+        onHandle(({ onStop }) => {
+          onStop(({ elapsed }) => {
+            const elapsed_time = elapsed.toFixed(4);
+            set.headers["X-Elapsed"] = elapsed_time;
+            logger.trace(`Request took: ${elapsed_time} ms`);
+          });
+        });
+      },
+    )
     .onError(({ code, error }) => {
       const isJson = typeof error === "object";
       const error_message =

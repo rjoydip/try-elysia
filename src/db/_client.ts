@@ -1,5 +1,5 @@
 import { isBun } from "std-env";
-import { env } from "~/env";
+import { env } from "~/_env";
 
 export async function createDB(db_url: string, db_auth_token: string, isBun: boolean = false) {
   if (!db_url) {

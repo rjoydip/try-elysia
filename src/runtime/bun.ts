@@ -1,9 +1,9 @@
 import { staticPlugin } from "@elysiajs/static";
 import { runtime } from "std-env";
-import { api } from "~/api";
+import { api } from "~/_api";
 import { createApp } from "~/_app";
 import { API_PREFIX, logger } from "~/_config";
-import { env } from "~/env";
+import { env } from "~/_env";
 
 const app = createApp({
   sanitize: (value) => Bun.escapeHTML(value),
