@@ -2,12 +2,15 @@ import { bearer } from "@elysiajs/bearer";
 import { fromTypes, openapi } from "@elysiajs/openapi";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { serverTiming } from "@elysiajs/server-timing";
+import { staticPlugin } from "@elysiajs/static";
 import { Elysia, type ElysiaConfig } from "elysia";
 import { ip } from "elysia-ip";
 import { DefaultContext, type Generator, rateLimit } from "elysia-rate-limit";
 import { SocketAddress } from "elysia/universal";
 import { elysiaHelmet } from "elysiajs-helmet";
-import { appConfig, logger, API_NAME } from "~/_config";
+import { escapeHTML } from "fast-escape-html";
+import { isBun } from "std-env";
+import { appConfig, logger, API_NAME, CLIENT_PATH } from "~/_config";
 
 /**
  * Generates a unique identifier for rate limiting based on the request's IP address.
@@ -22,6 +25,7 @@ export const createApp = (config?: ElysiaConfig<any>) =>
   new Elysia({
     ...appConfig,
     ...config,
+    sanitize: (value) => (isBun ? Bun.escapeHTML(value) : escapeHTML(value)),
   })
     .use(
       openapi({
@@ -84,6 +88,12 @@ export const createApp = (config?: ElysiaConfig<any>) =>
         context: new DefaultContext(10_000),
       }),
     )
+    .use(
+      async () =>
+        await staticPlugin({
+          assets: CLIENT_PATH,
+        }),
+    )
     .trace(
       /**
        * Configures tracing hooks for before/after/error handling.
@@ -131,6 +141,5 @@ export const createApp = (config?: ElysiaConfig<any>) =>
       });
     });
 
-type App = ReturnType<typeof createApp>;
+export type App = ReturnType<typeof createApp>;
 export default createApp;
-export { App };

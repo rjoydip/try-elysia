@@ -1,22 +1,10 @@
 import { v4 as secure } from "@lukeed/uuid/secure";
 import { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
-import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from "@tanstack/react-query";
-import { ErrorBoundary } from "react-error-boundary";
 import { logger } from "~/_config";
-import { rpc_api, useQuery } from "~/public/api";
+import { rpc_api, useQuery } from "~/client/api";
+import { queryClient } from "~/client/query";
 
-import "~/public/global.css";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-    },
-  },
-});
-
-function App() {
+export function App() {
   logger.info("🦊 TRY ELYSIA Frontend App 🦊");
   const [incomingMessage] = useState("🦊 TRY ELYSIA Frontend 🦊");
 
@@ -76,24 +64,3 @@ function App() {
     </>
   );
 }
-
-const root = createRoot(document.getElementById("root")!);
-root.render(
-  <QueryClientProvider client={queryClient}>
-    <QueryErrorResetBoundary>
-      {({ reset }) => (
-        <ErrorBoundary
-          onReset={reset}
-          fallbackRender={({ resetErrorBoundary }) => (
-            <div>
-              There was an error!
-              <button onClick={() => resetErrorBoundary()}>Try again</button>
-            </div>
-          )}
-        >
-          <App />
-        </ErrorBoundary>
-      )}
-    </QueryErrorResetBoundary>
-  </QueryClientProvider>,
-);

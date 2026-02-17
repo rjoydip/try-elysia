@@ -1,14 +1,10 @@
-import { staticPlugin } from "@elysiajs/static";
 import { runtime } from "std-env";
 import { api } from "~/_api";
 import { createApp } from "~/_app";
 import { API_PREFIX, logger } from "~/_config";
 import { env } from "~/_env";
 
-const app = createApp({
-  sanitize: (value) => Bun.escapeHTML(value),
-})
-  .use(async () => await staticPlugin({}))
+const app = createApp({})
   .use(api)
   .listen({
     port: env.PORT,
