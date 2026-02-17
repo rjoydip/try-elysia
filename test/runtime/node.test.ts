@@ -16,8 +16,8 @@ describe("Node Runtime", () => {
     expect(await response.text()).toContain("Welcome");
   });
 
-  it("should return a application/json response for /meta", async () => {
-    const response = await app.handle(new Request(`${API_ENDPOINT}/meta`));
+  it("should return a application/json response for /health", async () => {
+    const response = await app.handle(new Request(`${API_ENDPOINT}/health`));
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain("application/json");

@@ -12,6 +12,7 @@
     "jsx": "react-jsx",
     "paths": {
       "~/*": ["./src/*"],
+      "~/client/*": ["./client/*"],
       "~/public/*": ["./public/*"]
     }
   }

@@ -1,6 +1,5 @@
 import { readFileSync } from "node:fs";
 import { CloudflareAdapter } from "elysia/adapter/cloudflare-worker";
-import { escapeHTML } from "fast-escape-html";
 import { runtime } from "std-env";
 import { createApp } from "~/_app";
 import { api } from "~/_api";
@@ -11,7 +10,6 @@ const PORT = env.PORT;
 
 const app = createApp({
   adapter: CloudflareAdapter,
-  sanitize: (value) => escapeHTML(value),
 })
   .use(api)
   .listen({

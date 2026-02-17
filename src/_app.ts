@@ -2,12 +2,15 @@ import { bearer } from "@elysiajs/bearer";
 import { fromTypes, openapi } from "@elysiajs/openapi";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { serverTiming } from "@elysiajs/server-timing";
-import { Elysia, type ElysiaConfig } from "elysia";
+import { staticPlugin } from "@elysiajs/static";
+import { Elysia, file, type ElysiaConfig } from "elysia";
 import { ip } from "elysia-ip";
 import { DefaultContext, type Generator, rateLimit } from "elysia-rate-limit";
 import { SocketAddress } from "elysia/universal";
 import { elysiaHelmet } from "elysiajs-helmet";
-import { appConfig, logger, API_NAME } from "~/_config";
+import { escapeHTML } from "fast-escape-html";
+import { isBun } from "std-env";
+import { appConfig, logger, API_NAME, CLIENT_PATH } from "~/_config";
 
 /**
  * Generates a unique identifier for rate limiting based on the request's IP address.
@@ -22,6 +25,7 @@ export const createApp = (config?: ElysiaConfig<any>) =>
   new Elysia({
     ...appConfig,
     ...config,
+    sanitize: (value) => (isBun ? Bun.escapeHTML(value) : escapeHTML(value)),
   })
     .use(
       openapi({
@@ -84,6 +88,16 @@ export const createApp = (config?: ElysiaConfig<any>) =>
         context: new DefaultContext(10_000),
       }),
     )
+    .use(
+      async () =>
+        await staticPlugin({
+          assets: CLIENT_PATH,
+        }),
+    )
+
+    // Root & Shared endpoint
+    .get("/favicon.ico", file("./public/favicon.ico"))
+
     .trace(
       /**
        * Configures tracing hooks for before/after/error handling.
@@ -92,22 +106,37 @@ export const createApp = (config?: ElysiaConfig<any>) =>
       async ({ onBeforeHandle, onAfterHandle, onError, onHandle, set }) => {
         onBeforeHandle(({ begin, onStop }) => {
           onStop(({ end }) => {
-            logger.debug(`BeforeHandle took ${{ duration: end - begin }}`);
+            const duration =
+              typeof begin === "number" && typeof end === "number"
+                ? (end - begin).toFixed(4)
+                : "0.00";
+            logger.debug(`BeforeHandle took durations ${duration} ms`);
           });
         });
         onAfterHandle(({ begin, onStop }) => {
           onStop(({ end }) => {
-            logger.debug(`AfterHandle took ${{ duration: end - begin }}`);
+            const duration =
+              typeof begin === "number" && typeof end === "number"
+                ? (end - begin).toFixed(4)
+                : "0.00";
+            logger.debug(`AfterHandle took durations ${duration} ms`);
           });
         });
         onError(({ begin, onStop }) => {
           onStop(({ end, error }) => {
-            logger.error(`Error occurred after trace ${error}, ${{ duration: end - begin }}`);
+            const elapsed =
+              typeof begin === "number" && typeof end === "number"
+                ? (end - begin).toFixed(4)
+                : "0.00";
+            set.headers["X-Elapsed"] = elapsed;
+            if (error) {
+              logger.error(`Error occurred ${error}, ${elapsed} ms`);
+            }
           });
         });
         onHandle(({ onStop }) => {
           onStop(({ elapsed }) => {
-            const elapsed_time = elapsed.toFixed(4);
+            const elapsed_time = typeof elapsed === "number" ? elapsed.toFixed(4) : "0.00";
             set.headers["X-Elapsed"] = elapsed_time;
             logger.trace(`Request took: ${elapsed_time} ms`);
           });
@@ -131,6 +160,5 @@ export const createApp = (config?: ElysiaConfig<any>) =>
       });
     });
 
-type App = ReturnType<typeof createApp>;
+export type App = ReturnType<typeof createApp>;
 export default createApp;
-export { App };

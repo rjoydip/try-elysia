@@ -1,6 +1,5 @@
 import { readFileSync } from "node:fs";
 import { node } from "@elysiajs/node";
-import { escapeHTML } from "fast-escape-html";
 import { runtime } from "std-env";
 import { createApp } from "~/_app";
 import { api } from "~/_api";
@@ -11,7 +10,6 @@ const PORT = env.PORT;
 
 const app = createApp({
   adapter: node(),
-  sanitize: (value) => escapeHTML(value),
 })
   .use(api)
   .listen({
