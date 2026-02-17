@@ -14,6 +14,8 @@ export const rpc_api = treaty<API>(env.BASE_URL, {
   },
 });
 
+export type RpcApi = typeof rpc_api;
+
 /**
  * Typed useQuery hook for Eden Treaty endpoints
  * Automatically infers data and error types from the Treaty response

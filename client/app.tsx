@@ -1,8 +1,7 @@
-import { v4 as secure } from "@lukeed/uuid/secure";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { logger } from "~/_config";
 import { rpc_api, useQuery } from "~/client/api";
-import { queryClient } from "~/client/query";
+// import useWebSocket from "~/client/hooks/useWebsocket";
 
 export function App() {
   logger.info("🦊 TRY ELYSIA Frontend App 🦊");
@@ -16,35 +15,8 @@ export function App() {
     {},
   );
 
-  useEffect(() => {
-    const chat = rpc_api.api.chat.subscribe();
-    chat.subscribe(({ data }) => {
-      logger.info("Received message:", data);
-      queryClient.setQueriesData({ queryKey: ["ws_message"] }, (oldData: any) => {
-        const update = (item: any) => (item.id === data.id ? { ...item, ...data } : item);
-
-        if (!oldData) return oldData;
-        return Array.isArray(oldData) ? oldData.map(update) : update(oldData);
-      });
-    });
-
-    chat.on("open", (message) => {
-      logger.info("🦊 Elysia socket is open 🦊", message);
-      chat.send({ id: secure(), message: "🦊 Elysia socket is open 🦊" });
-    });
-
-    chat.on("close", (message) => {
-      logger.info("🦊 Elysia socket is closed 🦊", message);
-    });
-
-    chat.on("error", (message) => {
-      logger.info("🦊 Elysia socket is error 🦊", message);
-    });
-
-    return () => {
-      chat.close();
-    };
-  }, []);
+  // const wsMessage = useWebSocket(rpc_api);
+  // console.log(wsMessage);
 
   return (
     <>

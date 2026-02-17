@@ -56,11 +56,11 @@ export const api = new Elysia({
       },
     },
   )
-  .get("/meta", async ({ store: { name } }) => ({ name }), {
+  .get("/health", async ({ store: { name } }) => ({ name }), {
     detail: {
-      summary: "Get API metadata",
-      description: "Get API metadata",
-      tags: ["meta"],
+      summary: "Get API health",
+      description: "Get API health",
+      tags: ["health"],
       responses: {
         200: {
           description: "Success",

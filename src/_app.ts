@@ -3,7 +3,7 @@ import { fromTypes, openapi } from "@elysiajs/openapi";
 import { opentelemetry } from "@elysiajs/opentelemetry";
 import { serverTiming } from "@elysiajs/server-timing";
 import { staticPlugin } from "@elysiajs/static";
-import { Elysia, type ElysiaConfig } from "elysia";
+import { Elysia, file, type ElysiaConfig } from "elysia";
 import { ip } from "elysia-ip";
 import { DefaultContext, type Generator, rateLimit } from "elysia-rate-limit";
 import { SocketAddress } from "elysia/universal";
@@ -94,6 +94,10 @@ export const createApp = (config?: ElysiaConfig<any>) =>
           assets: CLIENT_PATH,
         }),
     )
+
+    // Root & Shared endpoint
+    .get("/favicon.ico", file("./public/favicon.ico"))
+
     .trace(
       /**
        * Configures tracing hooks for before/after/error handling.
@@ -102,22 +106,37 @@ export const createApp = (config?: ElysiaConfig<any>) =>
       async ({ onBeforeHandle, onAfterHandle, onError, onHandle, set }) => {
         onBeforeHandle(({ begin, onStop }) => {
           onStop(({ end }) => {
-            logger.debug(`BeforeHandle took ${{ duration: end - begin }}`);
+            const duration =
+              typeof begin === "number" && typeof end === "number"
+                ? (end - begin).toFixed(4)
+                : "0.00";
+            logger.debug(`BeforeHandle took durations ${duration} ms`);
           });
         });
         onAfterHandle(({ begin, onStop }) => {
           onStop(({ end }) => {
-            logger.debug(`AfterHandle took ${{ duration: end - begin }}`);
+            const duration =
+              typeof begin === "number" && typeof end === "number"
+                ? (end - begin).toFixed(4)
+                : "0.00";
+            logger.debug(`AfterHandle took durations ${duration} ms`);
           });
         });
         onError(({ begin, onStop }) => {
           onStop(({ end, error }) => {
-            logger.error(`Error occurred after trace ${error}, ${{ duration: end - begin }}`);
+            const elapsed =
+              typeof begin === "number" && typeof end === "number"
+                ? (end - begin).toFixed(4)
+                : "0.00";
+            set.headers["X-Elapsed"] = elapsed;
+            if (error) {
+              logger.error(`Error occurred ${error}, ${elapsed} ms`);
+            }
           });
         });
         onHandle(({ onStop }) => {
           onStop(({ elapsed }) => {
-            const elapsed_time = elapsed.toFixed(4);
+            const elapsed_time = typeof elapsed === "number" ? elapsed.toFixed(4) : "0.00";
             set.headers["X-Elapsed"] = elapsed_time;
             logger.trace(`Request took: ${elapsed_time} ms`);
           });

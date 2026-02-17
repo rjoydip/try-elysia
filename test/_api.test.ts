@@ -37,18 +37,18 @@ describe("API", () => {
     expect(response_text).toBe(welcome_message);
   });
 
-  it("should return metadata", async () => {
-    const metadata = {
+  it("should return health check", async () => {
+    const healthDetails = {
       name: API_NAME,
     };
 
-    const response = await app.handle(new Request(`${API_ENDPOINT}/meta`));
+    const response = await app.handle(new Request(`${API_ENDPOINT}/health`));
     const response_text = await response.text();
 
-    const { data } = await rpc_api.api.meta.get();
+    const { data } = await rpc_api.api.health.get();
 
-    expect(data).toEqual(metadata);
-    expect(response_text).toEqual(JSON.stringify(metadata));
+    expect(data).toEqual(healthDetails);
+    expect(response_text).toEqual(JSON.stringify(healthDetails));
   });
 
   it("should return ssr message", async () => {
