@@ -6,7 +6,7 @@ import { staticPlugin } from "@elysiajs/static";
 import { Elysia, file, type ElysiaConfig } from "elysia";
 import { ip } from "elysia-ip";
 import { DefaultContext, type Generator, rateLimit } from "elysia-rate-limit";
-import { SocketAddress } from "elysia/universal";
+import { type SocketAddress } from "elysia/universal";
 import { elysiaHelmet } from "elysiajs-helmet";
 import { escapeHTML } from "fast-escape-html";
 import { isBun } from "std-env";
