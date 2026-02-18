@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { logger } from "~/_config";
-import { rpc_api, useQuery } from "~/client/api";
+import { rpc_api, useQuery } from "~/public/api";
 // import useWebSocket from "~/client/hooks/useWebsocket";
 
 export function App() {

@@ -1,7 +1,7 @@
 import { v4 as secure } from "@lukeed/uuid/secure";
 import { useState, useEffect, useRef } from "react";
 import { logger } from "~/_config";
-import { RpcApi } from "~/client/api";
+import { type RpcApi } from "~/public/api";
 
 type WSPayload = {
   id: string;

@@ -1,8 +1,8 @@
-import { ElysiaConfig } from "elysia";
+import { type ElysiaConfig } from "elysia";
 import NonError from "non-error";
 import { isBun, isProduction } from "std-env";
 import stripAnsi from "strip-ansi";
-import { Logger, ILogObj } from "tslog";
+import { Logger, type ILogObj } from "tslog";
 
 export const API_PREFIX = `/api`;
 export const AUTH_PREFIX = `${API_PREFIX}/auth/*`;

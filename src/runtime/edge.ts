@@ -1,9 +1,9 @@
-import { Context } from "elysia";
+import { type Context } from "elysia";
 import { runtime } from "std-env";
 import { api } from "~/_api";
 import { createApp } from "~/_app";
 import { API_PREFIX, logger } from "~/_config";
-import { Env } from "~/_env";
+import { type Env } from "~/_env";
 
 const app = createApp({}).use(api);
 

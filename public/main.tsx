@@ -8,11 +8,19 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
-import { QueryClientProvider, QueryErrorResetBoundary } from "@tanstack/react-query";
-import { queryClient } from "~/client/query";
-import { App } from "~/client/app";
+import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from "@tanstack/react-query";
+import { App } from "~/public/app";
 
 import "~/client/index.css";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60, // 1 minute
+    },
+  },
+});
 
 const app = (
   <StrictMode>
