@@ -1,5 +1,7 @@
 # Elysia Application
 
+[![React Doctor](https://www.react.doctor/share/badge?p=try-elysia&s=96&w=29&f=26)](https://www.react.doctor/share?p=try-elysia&s=96&w=29&f=26)
+
 This project is a high-performance server application built with [ElysiaJS](https://elysiajs.com) and running on the [Bun](https://bun.sh) runtime, [node](https://nodejs.org/en/) and [worked](https://cloudflare.com).
 
 ## Prerequisites

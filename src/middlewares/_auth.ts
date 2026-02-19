@@ -1,6 +1,7 @@
 import type { Context } from "elysia";
 import Elysia from "elysia";
 import { auth } from "~/auth";
+import { AUTH_PREFIX } from "~/_config";
 
 // user middleware (compute user and session and pass to routes)
 export const authMiddleware = new Elysia({ name: "better-auth" }).mount(auth.handler).macro({
@@ -24,7 +25,7 @@ export const authMiddleware = new Elysia({ name: "better-auth" }).mount(auth.han
   },
 });
 
-const authService = new Elysia().all("/api/auth/*", (context: Context & { request: Request }) => {
+const authService = new Elysia().all(AUTH_PREFIX, (context: Context & { request: Request }) => {
   const BETTER_AUTH_ACCEPT_METHODS = ["POST", "GET"];
   // validate request method
   if (BETTER_AUTH_ACCEPT_METHODS.includes(context.request.method)) {
