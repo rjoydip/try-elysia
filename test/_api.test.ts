@@ -1,14 +1,14 @@
 import { v4 as secure } from "@lukeed/uuid/secure";
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { treaty } from "@elysiajs/eden";
-import { api as baseAPI, type API as BaseAPI } from "~/_api";
+import { api as baseAPI, type API } from "~/_api";
 import { API_NAME, API_PREFIX } from "~/_config";
 import { API_ENDPOINT } from "./_test_utils";
 
 describe("API", () => {
   let ws: WebSocket;
   const app = baseAPI;
-  const rpc_api = treaty<BaseAPI>(app);
+  const rpc_api = treaty<API>(app);
 
   beforeAll(() => {
     app.listen(0);
