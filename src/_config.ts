@@ -7,7 +7,6 @@ import { Logger, type ILogObj } from "tslog";
 export const API_PREFIX = `/api`;
 export const AUTH_PREFIX = `${API_PREFIX}/auth/*`;
 export const API_NAME = "TRY ELYSIA";
-export const APP_NAME = API_NAME;
 export const CLIENT_PATH = isBun ? `./client` : `./dist`;
 const _isBrowser = globalThis.window?.document !== undefined;
 
