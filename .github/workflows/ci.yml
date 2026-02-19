@@ -26,6 +26,9 @@ jobs:
       - name: Run type checking
         run: bun run typecheck
 
+      - name: React Doctor
+        run: bun run react:doctor
+
   test:
     runs-on: ubuntu-latest
     steps:
