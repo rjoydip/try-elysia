@@ -160,4 +160,4 @@ export const createApp = (config?: ElysiaConfig<any>) =>
       });
     });
 
-export type App = ReturnType<typeof createApp>;
+// export type App = ReturnType<typeof createApp>;
