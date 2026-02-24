@@ -9,9 +9,10 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "react-error-boundary";
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from "@tanstack/react-query";
+
 import { App } from "~/public/app";
 
-import "~/client/index.css";
+import "~/styles/index.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,8 @@ const queryClient = new QueryClient({
   },
 });
 
-const app = (
+const root = createRoot(document.getElementById("root")!);
+root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <QueryErrorResetBoundary>
@@ -41,8 +43,5 @@ const app = (
         )}
       </QueryErrorResetBoundary>
     </QueryClientProvider>
-  </StrictMode>
+  </StrictMode>,
 );
-
-const root = createRoot(document.getElementById("root")!);
-root.render(app);

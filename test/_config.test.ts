@@ -1,13 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import { Logger } from "tslog";
-import { API_NAME, API_PREFIX, appConfig, AUTH_PREFIX, CLIENT_PATH, logger } from "~/_config";
+import { API_NAME, API_PREFIX, appConfig, AUTH_PREFIX, logger } from "~/_config";
 
 describe("Config", () => {
   it("should export correct constants", () => {
     expect(API_PREFIX).toBe("/api");
     expect(AUTH_PREFIX).toBe("/api/auth/*");
     expect(API_NAME).toBe("TRY ELYSIA");
-    expect(CLIENT_PATH).toContain("client");
   });
 
   it("should export a configured logger", () => {

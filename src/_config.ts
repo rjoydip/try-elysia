@@ -1,13 +1,12 @@
 import { type ElysiaConfig } from "elysia";
 import NonError from "non-error";
-import { isBun, isProduction } from "std-env";
+import { isProduction } from "std-env";
 import stripAnsi from "strip-ansi";
 import { Logger, type ILogObj } from "tslog";
 
 export const API_PREFIX = `/api`;
 export const AUTH_PREFIX = `${API_PREFIX}/auth/*`;
 export const API_NAME = "TRY ELYSIA";
-export const CLIENT_PATH = isBun ? `./client` : `./dist`;
 const _isBrowser = globalThis.window?.document !== undefined;
 
 const _getFilePathForLog = () =>

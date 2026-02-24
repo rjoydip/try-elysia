@@ -10,7 +10,7 @@ import { type SocketAddress } from "elysia/universal";
 import { elysiaHelmet } from "elysiajs-helmet";
 import { escapeHTML } from "fast-escape-html";
 import { isBun } from "std-env";
-import { appConfig, logger, API_NAME, CLIENT_PATH } from "~/_config";
+import { appConfig, logger, API_NAME } from "~/_config";
 
 /**
  * Generates a unique identifier for rate limiting based on the request's IP address.
@@ -88,12 +88,7 @@ export const createApp = (config?: ElysiaConfig<any>) =>
         context: new DefaultContext(10_000),
       }),
     )
-    .use(
-      async () =>
-        await staticPlugin({
-          assets: CLIENT_PATH,
-        }),
-    )
+    .use(async () => await staticPlugin())
 
     // Root & Shared endpoint
     .get("/favicon.ico", file("./public/favicon.ico"))

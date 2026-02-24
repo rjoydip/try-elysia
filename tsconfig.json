@@ -24,7 +24,6 @@
     /* Aliases */
     "paths": {
       "~/*": ["./src/*"],
-      "~/client/*": ["./src/client/*"],
       "~/public/*": ["./public/*"]
     }
   }
