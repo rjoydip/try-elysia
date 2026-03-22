@@ -229,7 +229,7 @@ Git hooks run automatically on commit:
 bun install --ignore-scripts --offline
 bun run lint
 bun run typecheck
-bun run action:up
+bun run actions:up
 bun run react:doctor
 ```
 

@@ -25,12 +25,12 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3 # v2.1.2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
 
       - name: Cache bun dependencies
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ${{ env.BUN_INSTALL_CACHE_DIR }}
           key: ${{ runner.os }}-bun-deps-${{ hashFiles('**/bun.lockb') }}
@@ -50,7 +50,7 @@ jobs:
         run: bun run build:bun
 
       - name: Create production release
-        uses: changesets/action@v1
+        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
         with:
           publish: bun run release
           commit-message: "chore: release version ${ changeset_changes_sha }"

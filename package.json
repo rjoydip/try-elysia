@@ -10,7 +10,7 @@
     "lint:fix": "oxlint . --fix && oxfmt .",
     "react:doctor": "react-doctor . --no-ami -y",
     "typecheck": "tsgo --noEmit",
-    "action:up": "actions-up",
+    "actions:up": "actions-up",
     "changeset": "changeset",
     "changesets": "changeset",
     "version": "changeset version",
@@ -97,6 +97,6 @@
     "wrangler": "^4.67.0"
   },
   "simple-git-hooks": {
-    "pre-commit": "bun install --ignore-scripts --offline && bun run lint && bun run typecheck && bun run action:up && bun run react:doctor"
+    "pre-commit": "bun install --ignore-scripts --offline && bun run lint && bun run typecheck && bun run actions:up && bun run react:doctor"
   }
 }
