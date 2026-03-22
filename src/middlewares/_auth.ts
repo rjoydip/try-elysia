@@ -38,5 +38,5 @@ const authService = new Elysia().all(AUTH_PREFIX, (context: Context & { request:
   }
 });
 
-export { authService };
+export { authService, auth };
 export type AuthService = typeof authService;

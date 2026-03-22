@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { Logger } from "tslog";
-import { API_NAME, API_PREFIX, appConfig, AUTH_PREFIX, logger } from "~/_config";
+import { API_NAME, API_PREFIX, appConfig, AUTH_PREFIX, logger, rateLimitConfig } from "~/_config";
 
 describe("Config", () => {
   it("should export correct constants", () => {
@@ -23,6 +23,13 @@ describe("Config", () => {
       websocket: {
         idleTimeout: 30,
       },
+    });
+  });
+
+  it("should export rateLimitConfig", () => {
+    expect(rateLimitConfig).toEqual({
+      duration: 60_000,
+      max: 100,
     });
   });
 });

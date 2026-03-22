@@ -1,9 +1,15 @@
 import { isBun } from "std-env";
 import { env } from "~/_env";
 
+let dbInstance: Awaited<ReturnType<typeof createDB>> | null = null;
+
 export async function createDB(db_url: string, db_auth_token: string, isBun: boolean = false) {
   if (!db_url) {
     throw new Error("DATABASE_URL is not defined");
+  }
+
+  if (db_url.trim() === "") {
+    throw new Error("DATABASE_URL cannot be empty");
   }
 
   if (isBun) {
@@ -28,5 +34,12 @@ export async function createDB(db_url: string, db_auth_token: string, isBun: boo
   }
 }
 
-export const db = await createDB(env.DATABASE_URL, env.DATABASE_AUTH_TOKEN, isBun);
+export async function getDB() {
+  if (!dbInstance) {
+    dbInstance = await createDB(env.DATABASE_URL, env.DATABASE_AUTH_TOKEN, isBun);
+  }
+  return dbInstance;
+}
+
+export const db = await getDB();
 export type DB = Awaited<ReturnType<typeof createDB>>;

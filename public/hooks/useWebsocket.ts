@@ -1,5 +1,5 @@
 import { v4 as secure } from "@lukeed/uuid/secure";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { logger } from "~/_config";
 import { type RpcApi } from "~/public/api";
 
@@ -12,34 +12,32 @@ const useWebSocket = (rpc_api: RpcApi) => {
   const chat = rpc_api.api.chat.subscribe();
   const [message, setMessage] = useState<WSPayload | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const socketRef = useRef(null);
 
   useEffect(() => {
-    // Open connection
-    chat.on("open", (message) => {
+    chat.on("open", (msg) => {
       setIsConnected(true);
-      logger.info("🦊 Elysia socket is open 🦊", message);
-      setMessage(message as unknown as WSPayload);
+      logger.info("🦊 Elysia socket is open 🦊", msg);
+      setMessage(msg as unknown as WSPayload);
       chat.send({ id: secure(), message: "🦊 Elysia socket is open 🦊" });
     });
 
-    chat.on("close", (message) => {
-      logger.info("🦊 Elysia socket is closed 🦊", message);
+    chat.on("close", (msg) => {
+      setIsConnected(false);
+      logger.info("🦊 Elysia socket is closed 🦊", msg);
     });
 
-    chat.on("error", (message) => {
-      logger.info("🦊 Elysia socket is error 🦊", message);
+    chat.on("error", (msg) => {
+      logger.info("🦊 Elysia socket is error 🦊", msg);
     });
 
-    // Cleanup function to close the connection when the component unmounts
     return () => {
       chat.close();
     };
-  }, []); // Re-run effect if URL changes
+  }, []);
 
-  const sendMessage = (message: string) => {
-    if (socketRef.current && isConnected) {
-      chat.send({ id: secure(), message });
+  const sendMessage = (msg: string) => {
+    if (isConnected) {
+      chat.send({ id: secure(), message: msg });
     }
   };
 

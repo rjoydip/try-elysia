@@ -1,6 +1,6 @@
 import { v4 as secure } from "@lukeed/uuid/secure";
 import { t, type TSchema, getSchemaValidator } from "elysia";
-import { isBun, isNode, isWorkerd } from "std-env";
+import { isBun, isNode, isWorkerd, isProduction } from "std-env";
 import { API_PREFIX } from "~/_config";
 
 export interface EnvOptions {
@@ -121,6 +121,20 @@ const _getEnv = (key: string, defaultValue: string | number = ""): string => {
 const _DEFAULT_PORT = isWorkerd ? 8787 : 3000;
 const _BASE_URL = `http://localhost:${_DEFAULT_PORT}`;
 
+function _getAuthSecret(): string {
+  const secret = _getEnv("BETTER_AUTH_SECRET", "");
+  if (!secret) {
+    if (isProduction) {
+      throw new Error("BETTER_AUTH_SECRET is required in production");
+    }
+    console.warn(
+      "⚠️ BETTER_AUTH_SECRET not set, using random value (sessions will be invalidated on restart)",
+    );
+    return secure();
+  }
+  return secret;
+}
+
 export const env = await _createEnv({
   load: async () => {
     if (isNode) {
@@ -144,7 +158,7 @@ export const env = await _createEnv({
     BASE_URL: _getEnv("BASE_URL", _BASE_URL),
     API_ENDPOINT: _getEnv("API_ENDPOINT", `${_BASE_URL}${API_PREFIX}`),
     BETTER_AUTH_BASE_URL: _getEnv("BETTER_AUTH_BASE_URL", `${_BASE_URL}${API_PREFIX}`),
-    BETTER_AUTH_SECRET: _getEnv("BETTER_AUTH_SECRET", secure()),
+    BETTER_AUTH_SECRET: _getAuthSecret(),
     DATABASE_URL: _getEnv("DATABASE_URL", ""),
     DATABASE_AUTH_TOKEN: _getEnv("DATABASE_AUTH_TOKEN", ""),
     PORT: _getEnv("PORT", _DEFAULT_PORT),

@@ -2,7 +2,7 @@ import { v4 as secure } from "@lukeed/uuid/secure";
 import { Elysia, t, sse } from "elysia";
 import { API_NAME, logger, API_PREFIX } from "~/_config";
 import { userRoutes } from "~/features/user/+index.routes";
-import { authService } from "~/middlewares/_auth";
+import { authService, auth } from "~/middlewares/_auth";
 
 export const api = new Elysia({
   prefix: API_PREFIX,
@@ -23,8 +23,22 @@ export const api = new Elysia({
       message: t.String(),
     }),
     async open(ws) {
+      const headers = new Headers();
+      for (const [key, value] of Object.entries(ws.data.headers)) {
+        if (value) {
+          headers.append(key, value);
+        }
+      }
+
+      const session = await auth.api.getSession({ headers });
+
+      if (!session) {
+        ws.send({ id: secure(), message: "Unauthorized" });
+        setTimeout(() => ws.close(1008, "Unauthorized"), 100);
+        return;
+      }
+
       logger.info("WebSocket connection opened");
-      // TODO: Authorize WS
       ws.send({ id: secure(), message: "Welcome" });
     },
     message(ws, message) {
