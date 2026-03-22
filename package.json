@@ -97,6 +97,6 @@
     "wrangler": "^4.67.0"
   },
   "simple-git-hooks": {
-    "pre-commit": "bun install --ignore-scripts --offline && bun run lint && bun run typecheck && bun run actions:up && bun run react:doctor"
+    "pre-commit": "bun run lint && bun run typecheck && bun run react:doctor"
   }
 }
