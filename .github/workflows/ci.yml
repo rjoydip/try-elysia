@@ -51,12 +51,18 @@ jobs:
         run: bun run react:doctor
 
   test:
-    name: Tests (${{ matrix.runtime }})
+    name: Tests & Build (${{ matrix.runtime }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        runtime: [bun, node]
+        include:
+          - runtime: bun
+            build_cmd: build:bun
+            artifact_name: server-bun
+          - runtime: node
+            build_cmd: build:node
+            artifact_name: server-node
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -86,38 +92,12 @@ jobs:
       - name: Run tests (${{ matrix.runtime }})
         run: bun test
 
-  build:
-    name: Build Validation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build (${{ matrix.runtime }})
+        run: bun run ${{ matrix.build_cmd }}
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-        with:
-          bun-version-file: package.json
-
-      - name: Cache bun dependencies
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-        with:
-          path: ${{ env.BUN_INSTALL_CACHE_DIR }}
-          key: ${{ runner.os }}-bun-deps-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-deps-
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build Node.js server
-        run: bun run build:node
-
-      - name: Build Bun binary
-        run: bun run build:bun
-
-      - name: Upload Bun binary artifact
+      - name: Upload ${{ matrix.artifact_name }} artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: server-bun
+          name: ${{ matrix.artifact_name }}
           path: server
           retention-days: 1
