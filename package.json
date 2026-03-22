@@ -5,9 +5,8 @@
   "scripts": {
     "prepare": "simple-git-hooks",
     "postinstall": "[ -d .opencode ] && cd .opencode && bun install || true",
-    "lint": "oxlint . && oxfmt --check .",
-    "lint:github": "oxlint --format=github && oxfmt --check .",
     "fmt": "oxfmt .",
+    "lint": "oxlint . --format=github && oxfmt --check .",
     "lint:fix": "oxlint . --fix && oxfmt .",
     "react:doctor": "react-doctor . --no-ami -y",
     "typecheck": "tsgo --noEmit",
