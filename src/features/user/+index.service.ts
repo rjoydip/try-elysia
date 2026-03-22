@@ -1,6 +1,6 @@
 import { v4 as secure } from "@lukeed/uuid/secure";
 import { type DB } from "~/db/_client";
-import { user } from "~/db/schema/_uers";
+import { user } from "~/db/schema/_users";
 import { eq, type InferSelectModel } from "drizzle-orm";
 
 export class UserNotFoundError extends Error {
