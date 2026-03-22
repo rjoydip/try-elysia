@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "bun:test";
 import { UserService, UserNotFoundError } from "~/features/user/+index.service";
 import { db } from "~/db/_client";
-import { user } from "~/db/schema/_main";
+import { user } from "~/db/schema/_uers";
 import { eq } from "drizzle-orm";
 
 describe("UserService", () => {

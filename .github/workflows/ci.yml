@@ -80,6 +80,7 @@ jobs:
       - name: Run database migrations
         run: |
           rm -f sqlite.db
+          bun run db:generate
           bun run db:migrate
 
       - name: Run tests (${{ matrix.runtime }})
@@ -109,7 +110,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build Node.js server
-        run: bun run server:build:node
+        run: bun run build:node
 
       - name: Build Bun binary
         run: bun run build:bun
