@@ -43,7 +43,7 @@ jobs:
       - name: Run Linters
         run: |
           ls -al
-          bun run lint
+          bun run lint:ci
 
       - name: Run type checking
         run: bun run typecheck
