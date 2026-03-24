@@ -8,7 +8,7 @@
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
     "lint": "oxlint . --format=github",
-    "lint:ci": "bun run fmt:check",
+    "lint:ci": "bun run lint && bun run fmt:check",
     "lint:fix": "oxlint . --fix && oxfmt .",
     "react:doctor": "react-doctor . --no-ami -y",
     "typecheck": "tsgo --noEmit",

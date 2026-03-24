@@ -45,5 +45,5 @@ migrations/
 **/*.db
 **/*.sqlite
 
-# Opencode
+# Opencode (for CI lint issue)
 .opencode/~/
