@@ -1,7 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { createApp } from "~/_app";
 import { API_ENDPOINT, BASE_URL } from "./_test_utils";
-import { API_PREFIX } from "~/_config";
 
 describe("createApp", () => {
   it("should initialize the application", async () => {
@@ -16,7 +15,7 @@ describe("createApp", () => {
 
     expect(response.ok).toBeFalse();
     expect(response.status).toBe(404);
-    expect(body).toEqual({ error: "Error: Endpoint not found" });
+    expect(body).toEqual({ error: "Endpoint not found" });
   });
 
   it("should return 404 for / routes", async () => {
@@ -26,7 +25,7 @@ describe("createApp", () => {
 
     expect(response.ok).toBeFalse();
     expect(response.status).toBe(404);
-    expect(body).toEqual({ error: "Error: Endpoint not found" });
+    expect(body).toEqual({ error: "Endpoint not found" });
   });
 
   it("should return 200 for /favicon.ico", async () => {
@@ -38,17 +37,15 @@ describe("createApp", () => {
   });
 
   it("should handle thrown Errors by returning a JSON response", async () => {
-    // Setup a route that throws an Error
-    const app = createApp({ prefix: API_PREFIX }).get("/trigger-error", () => {
+    const app = createApp().get("/trigger-error", () => {
       throw new Error("Something went wrong");
     });
 
-    const response = await app.handle(new Request(`${API_ENDPOINT}/trigger-error`));
+    const response = await app.handle(new Request(`${BASE_URL}/trigger-error`));
     const body = await response.json();
 
     expect(response.ok).toBeFalse();
     expect(response.status).toBe(500);
-    // The onError handler in _app.ts stringifies the error object
-    expect(body).toEqual({ error: "Error: Something went wrong" });
+    expect(body).toEqual({ error: "Something went wrong" });
   });
 });

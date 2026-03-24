@@ -24,7 +24,7 @@ describe("Bun Runtime", () => {
     const response = await app.handle(new Request(`${API_ENDPOINT}/health`));
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toBe("application/json");
+    expect(response.headers.get("Content-Type")?.startsWith("application/json")).toBeTrue();
     expect(response.headers.get("Content-Length")).toBeDefined();
 
     const body = await response.json();

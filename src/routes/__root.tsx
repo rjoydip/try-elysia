@@ -4,6 +4,8 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import appCss from "~/styles/index.css";
 
+const isDev = import.meta.env.DEV;
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -36,17 +38,19 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
-          plugins={[
-            {
-              name: "Tanstack Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        {isDev && (
+          <TanStackDevtools
+            config={{
+              position: "bottom-right",
+            }}
+            plugins={[
+              {
+                name: "Tanstack Router",
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+            ]}
+          />
+        )}
         <Scripts />
       </body>
     </html>

@@ -38,36 +38,29 @@ export const logger: Logger<ILogObj> = new Logger({
     fileName: ["yellow"],
   },
   overwrite: {
-    transportFormatted: (logMetaMarkup, logArgs, logErrors, logMeta) => {
-      const logLevel = logMeta?.logLevelName ?? logMetaMarkup.trim().split("\t")[1];
+    transportFormatted: (logMetaMarkup, logArgs, logErrors) => {
+      const logLevel = logMetaMarkup.trim().split("\t")[1];
       switch (logLevel) {
         case "WARN":
           console.warn(logMetaMarkup.trim(), ...logArgs, ...logErrors);
           break;
         case "ERROR":
-        case "FATAL":
-          const newError = logErrors.map((i) => {
+        case "FATAL": {
+          const formattedErrors = logErrors.map((i) => {
             const withoutErrorSuffixer = i.replace("Error ", "").trim();
-            if (_isBrowser) {
-              const nonError = new NonError(
-                stripAnsi(withoutErrorSuffixer.replaceAll("error stack:", "")).trim(),
-              );
-              return nonError.value;
-            } else {
-              return withoutErrorSuffixer;
-            }
+            return _isBrowser
+              ? new NonError(stripAnsi(withoutErrorSuffixer.replaceAll("error stack:", "")).trim())
+                  .value
+              : withoutErrorSuffixer;
           });
-          console.error(logMetaMarkup.trim(), ...logArgs, ...newError);
+          console.error(logMetaMarkup.trim(), ...logArgs, ...formattedErrors);
           break;
+        }
         case "INFO":
           console.info(logMetaMarkup.trim(), ...logArgs, ...logErrors);
           break;
-        case "DEBUG":
-        case "TRACE":
-        case "SILLY":
         default:
           console.log(logMetaMarkup.trim(), ...logArgs, ...logErrors);
-          break;
       }
     },
   },
@@ -80,4 +73,9 @@ export const appConfig: ElysiaConfig<any> = {
   websocket: {
     idleTimeout: 30,
   },
+};
+
+export const rateLimitConfig = {
+  duration: 60_000,
+  max: 100,
 };

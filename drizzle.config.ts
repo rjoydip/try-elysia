@@ -1,7 +1,8 @@
 import type { Config } from "drizzle-kit";
-import { env } from "~/_env";
+import "dotenv/config";
 
-if (!env.DATABASE_URL) {
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
   throw new Error("DATABASE_URL is required");
 }
 
@@ -10,11 +11,9 @@ export default {
   schema: "./src/db/schema",
   breakpoints: true,
   dialect: "sqlite",
-  // Set driver only if you are using aws-data-api, turso, d1-http, or expo
-  // driver: 'turso',
   dbCredentials: {
-    url: env.DATABASE_URL,
-    token: env.DATABASE_AUTH_TOKEN,
+    url: databaseUrl,
+    token: process.env.DATABASE_AUTH_TOKEN,
   },
   verbose: true,
   casing: "snake_case",

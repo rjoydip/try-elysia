@@ -1,6 +1,6 @@
 import { reset, seed } from "drizzle-seed";
 import { createDB } from "~/db/_client";
-import * as schema from "~/db/schema/_main";
+import * as schema from "~/db/schema/_users";
 import { logger } from "~/_config";
 import { env } from "~/_env";
 

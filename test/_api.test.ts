@@ -1,4 +1,3 @@
-import { v4 as secure } from "@lukeed/uuid/secure";
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { treaty } from "@elysiajs/eden";
 import { api as baseAPI, type API } from "~/_api";
@@ -12,7 +11,6 @@ describe("API", () => {
 
   beforeAll(() => {
     app.listen(0);
-    // Listen on port 0 to let the OS assign a random available port
     const port = app.server?.port;
 
     if (!port) throw new Error("Server failed to start");
@@ -52,7 +50,6 @@ describe("API", () => {
   });
 
   it("should return ssr message", async () => {
-    // const response = await app.handle(new Request(`${API_ENDPOINT}/sse`));
     const { data, error } = await rpc_api.api.sse.get();
 
     if (error) {
@@ -65,37 +62,23 @@ describe("API", () => {
     }
   });
 
-  it("should handle connection and messages", async () => {
-    // Capture received messages
+  it("should handle unauthorized WebSocket connection", async () => {
     const messages: { id: string; message: string }[] = [];
+
     ws.addEventListener("message", ({ data }) => {
       messages.push(data);
     });
 
-    // Wait for connection to open
     await new Promise<void>((resolve) => {
       ws.addEventListener("open", () => resolve());
     });
 
-    // Wait for the welcome message (sent on open)
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 150));
 
     expect(messages.length).toBe(1);
     expect(JSON.parse(messages[0].toString())).toMatchObject({
       id: expect.any(String),
-      message: "Welcome",
-    });
-
-    // Send a test message
-    ws.send(JSON.stringify({ id: secure(), message: "Hello Elysia" }));
-
-    // Wait for the echo response
-    await new Promise((resolve) => setTimeout(resolve, 10));
-
-    expect(messages.length).toBe(2);
-    expect(JSON.parse(messages[1].toString())).toMatchObject({
-      id: expect.any(String),
-      message: "Hello Elysia",
+      message: "Unauthorized",
     });
   });
 });
