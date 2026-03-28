@@ -6,6 +6,15 @@
 
 A high-performance full-stack server application built with [ElysiaJS](https://elysiajs.com) and [TanStack Start](https://tanstack.com/start), designed to run on multiple JavaScript runtimes.
 
+> [!WARNING]
+> ⚠️ **Experimental Repository**
+> This repo is for prototyping and experimentation only — it may be unstable and is **not for production use**.
+>
+> 👉 Use the official project instead: https://github.com/rjoydip/tss-elysia
+---
+
+If you find something useful here, feel free to explore—but for any serious usage, always prefer the recommended repository above.
+
 ## Features
 
 - **Multi-Runtime Support** - Deploy to Bun, Node.js, or Cloudflare Workers
